@@ -67,7 +67,7 @@ def get_popular_articles():
 
 
     
-@app.get("/popular-articles")
+@app.get("/")
 async def popular_articles_handler():
     try:
         popular_json = get_popular_articles()
