@@ -53,7 +53,7 @@ def get_popular_articles():
         top_articles = df.sort_values('popularity_score', ascending=False).head(5)
         
         # Drop the popularity_score column
-        top_articles = df[['id','Title','Content','ShortDescription','User','Likes']]
+        top_articles = top_articles[['id','Title','Content','ShortDescription','User','Likes']]
         
         # Drop the popularity_score column
         
