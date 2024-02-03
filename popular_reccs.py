@@ -1,11 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import requests
 import psycopg2 
 
 #db_url = "host=arjuna.db.elephantsql.com user=zpzenhka password=va0hKEJBMlferhvZOvqgll5uv1u-VT90 dbname=zpzenhka port=5432 sslmode=disable"
 rows = None
+
 
 def fetch_from_db():
     db_params = {
@@ -41,6 +43,19 @@ def fetch_from_db():
 
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",  # Replace this with the origin of your frontend
+    # Add more origins as needed
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_popular_articles():
     try:
