@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import requests
 import psycopg2 
+import numpy as np
 
 #db_url = "host=arjuna.db.elephantsql.com user=zpzenhka password=va0hKEJBMlferhvZOvqgll5uv1u-VT90 dbname=zpzenhka port=5432 sslmode=disable"
 rows = None
@@ -60,12 +61,18 @@ app.add_middleware(
 def get_popular_articles():
     try:
         df = fetch_from_db()
+        df['created_at'] = pd.to_datetime(df['created_at'], utc=True)
+        decay_factor = 0.05  # You can adjust this value based on your preference
+        current_time = pd.Timestamp.now(tz='UTC')
+        df['time_diff'] = (current_time - df['created_at']).dt.total_seconds() / (60 * 60 * 24)  # Convert to days
+        df['decay'] = np.exp(-decay_factor * df['time_diff'])
         
         # Calculate popularity score
-        df['popularity_score'] = df['Likes'] * 0.4
+        df['popularity_with_decay'] = df['Likes'] * df['decay']
+
         
         # Get top 5 popular articles
-        top_articles = df.sort_values('popularity_score', ascending=False).head(5)
+        top_articles = df.sort_values('popularity_with_decay', ascending=False).head(5)
         
         # Drop the popularity_score column
         top_articles = top_articles[['id','Title','Content','ShortDescription','User','Likes']]
