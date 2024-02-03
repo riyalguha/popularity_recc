@@ -30,7 +30,7 @@ def fetch_from_db():
         rows = cursor.fetchall()
 
         # Define column names based on your database schema
-        column_names = ["id", "created_at", "updated_at", "some_column", "Title", "Content", "ShortDescription", "User", "Likes"]
+        column_names = ["id", "created_at", "updated_at", "some_column", "Title", "Content", "ShortDescription", "User","article_embeddings", "Likes"]
 
         # Create a DataFrame using fetched rows and column names
         df = pd.DataFrame(rows, columns=column_names)
@@ -92,8 +92,8 @@ def get_popular_articles():
 @app.get("/")
 async def popular_articles_handler():
     try:
-        popular_json = get_popular_articles()
-        return JSONResponse(content=popular_json)
+        pop_json = get_popular_articles()
+        return JSONResponse(content=pop_json)
     except HTTPException as e:
         # Propagate HTTPExceptions
         raise e
